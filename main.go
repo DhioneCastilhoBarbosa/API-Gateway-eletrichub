@@ -29,8 +29,8 @@ func main() {
 	r.Any("/user/list", proxyRequest("https://api-user-service.eletrihub.com/user/list"))
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws"))
 
-	log.Println("API Gateway rodando na porta 8080...")
-	r.Run(":8080")
+	log.Println("API Gateway rodando na porta 8086...")
+	r.Run(":8086")
 }
 
 // Função para redirecionar requisições para os microsserviços
