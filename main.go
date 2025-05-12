@@ -37,7 +37,14 @@ func main() {
 func proxyRequest(targetURL string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		client := &http.Client{}
-		req, err := http.NewRequest(c.Request.Method, targetURL, c.Request.Body)
+
+		// Adiciona a query string original
+		reqURL := targetURL
+		if c.Request.URL.RawQuery != "" {
+			reqURL += "?" + c.Request.URL.RawQuery
+		}
+
+		req, err := http.NewRequest(c.Request.Method, reqURL, c.Request.Body)
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao criar requisição"})
 			return
