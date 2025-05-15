@@ -32,6 +32,7 @@ func main() {
 	// Rotas dinâmicas (preserve o path original)
 	r.Any("/user/:id/password", proxyRequest("https://api-user-service.eletrihub.com", true))
 	r.Any("/user/:id/photo", proxyRequest("https://api-user-service.eletrihub.com", true))
+	r.Any("user/:id", proxyRequest("https://api-user-service.eletrihub.com", true))
 
 	// WebSocket
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws", false))
