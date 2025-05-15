@@ -27,6 +27,7 @@ func main() {
 	r.Any("/user/login", proxyRequest("https://api-user-service.eletrihub.com/user/login", false))
 	r.Any("/user/register", proxyRequest("https://api-user-service.eletrihub.com/user/register", false))
 	r.Any("/user/list", proxyRequest("https://api-user-service.eletrihub.com/user/list", false))
+	r.Any("/user/public/installers", proxyRequest("https://api-user-service.eletrihub.com/user/public/installers", false))
 
 	// Rotas dinâmicas (preserve o path original)
 	r.Any("/user/:id/password", proxyRequest("https://api-user-service.eletrihub.com", true))
