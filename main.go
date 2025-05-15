@@ -15,7 +15,7 @@ func main() {
 
 	// Configuração do CORS
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Você pode restringir, ex: http://localhost:3000
+		AllowOrigins:     []string{"*"}, // Restrinja para produção
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -23,16 +23,19 @@ func main() {
 		MaxAge:           12 * time.Hour,
 	}))
 
-	// Rotas do API Gateway
+	// Rotas simples (endpoint fixo)
 	r.Any("/user/login", proxyRequest("https://api-user-service.eletrihub.com/user/login", false))
 	r.Any("/user/register", proxyRequest("https://api-user-service.eletrihub.com/user/register", false))
 	r.Any("/user/list", proxyRequest("https://api-user-service.eletrihub.com/user/list", false))
 	r.Any("/user/public/installers", proxyRequest("https://api-user-service.eletrihub.com/user/public/installers", false))
 
-	// Rotas dinâmicas (preserve o path original)
+	// Rota com query params (lat/lng) - ajustada
+	r.Any("/user/public/installers/nearby", proxyRequest("https://api-user-service.eletrihub.com/user/public/installers/nearby", false))
+
+	// Rotas dinâmicas (com ID no path)
 	r.Any("/user/:id/password", proxyRequest("https://api-user-service.eletrihub.com", true))
 	r.Any("/user/:id/photo", proxyRequest("https://api-user-service.eletrihub.com", true))
-	r.Any("user/:id", proxyRequest("https://api-user-service.eletrihub.com", true))
+	r.Any("/user/:id", proxyRequest("https://api-user-service.eletrihub.com", true)) // ⚠️ Corrigido path para funcionar
 
 	// WebSocket
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws", false))
@@ -46,7 +49,7 @@ func proxyRequest(targetURL string, preservePath bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		client := &http.Client{}
 
-		// Decide se mantém o caminho original
+		// Monta a URL de destino
 		reqURL := targetURL
 		if preservePath {
 			reqURL += c.Request.URL.Path
@@ -62,6 +65,7 @@ func proxyRequest(targetURL string, preservePath bool) gin.HandlerFunc {
 			return
 		}
 
+		// Copia os headers
 		req.Header = make(http.Header)
 		for key, values := range c.Request.Header {
 			for _, value := range values {
@@ -69,6 +73,7 @@ func proxyRequest(targetURL string, preservePath bool) gin.HandlerFunc {
 			}
 		}
 
+		// Executa a requisição
 		resp, err := client.Do(req)
 		if err != nil {
 			c.JSON(http.StatusBadGateway, gin.H{"error": "Erro ao conectar ao serviço"})
@@ -76,16 +81,18 @@ func proxyRequest(targetURL string, preservePath bool) gin.HandlerFunc {
 		}
 		defer resp.Body.Close()
 
-		body, err := io.ReadAll(resp.Body)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao ler resposta do serviço"})
-			return
-		}
-
+		// Copia headers da resposta
 		for key, values := range resp.Header {
 			for _, value := range values {
 				c.Header(key, value)
 			}
+		}
+
+		// Copia o corpo da resposta
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Erro ao ler resposta do serviço"})
+			return
 		}
 
 		c.Status(resp.StatusCode)
