@@ -35,7 +35,18 @@ func main() {
 	// Rotas dinâmicas (com ID no path)
 	r.Any("/user/:id/password", proxyRequest("https://api-user-service.eletrihub.com", true))
 	r.Any("/user/:id/photo", proxyRequest("https://api-user-service.eletrihub.com", true))
-	r.Any("/user/:id", proxyRequest("https://api-user-service.eletrihub.com", true)) // ⚠️ Corrigido path para funcionar
+	r.Any("/user/:id", proxyRequest("https://api-user-service.eletrihub.com", true))
+
+	// Rotas para o budget-service
+	r.Any("/api/v1/budget", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget", false))           // POST, GET
+	r.Any("/api/v1/budget/all", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/all", false))   // GET
+	r.Any("/api/v1/budget/link", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/link", false)) // PUT
+
+	r.Any("/api/v1/budget/:id/value", proxyRequest("https://budget-service.api-castilho.com.br", true))   // PUT (protegido)
+	r.Any("/api/v1/budget/:id/status", proxyRequest("https://budget-service.api-castilho.com.br", true))  // PUT (protegido)
+	r.Any("/api/v1/budget/:id/dates", proxyRequest("https://budget-service.api-castilho.com.br", true))   // PUT (protegido)
+	r.Any("/api/v1/budget/:id/payment", proxyRequest("https://budget-service.api-castilho.com.br", true)) // PUT (protegido)
+	r.Any("/api/v1/budget/:id/confirm", proxyRequest("https://budget-service.api-castilho.com.br", true)) // PUT (protegido)
 
 	// WebSocket
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws", false))
