@@ -15,7 +15,7 @@ func main() {
 
 	// CORS configurado corretamente
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"http://localhost:5173", "https://app.eletrihub.com"}, // ajuste para produção
+		AllowOrigins:     []string{"http://localhost:5173", "https://www.eletrihub.com"}, // ajuste para produção
 		AllowMethods:     []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
