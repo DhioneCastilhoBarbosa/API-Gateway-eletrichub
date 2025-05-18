@@ -38,7 +38,7 @@ func main() {
 	r.Any("/user/:id", proxyRequest("https://api-user-service.eletrihub.com", true))
 
 	// Rotas para o budget-service
-	r.Any("/api/v1/budget/", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget", false))          // POST, GET
+	r.Any("/api/v1/budget/", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/", false))         // POST, GET
 	r.Any("/api/v1/budget/all", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/all", false))   // GET
 	r.Any("/api/v1/budget/link", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/link", false)) // PUT
 
