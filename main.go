@@ -46,6 +46,10 @@ func main() {
 	r.Any("/api/v1/budget/:id/payment", proxyRequest("https://budget-service.api-castilho.com.br", true))
 	r.Any("/api/v1/budget/:id/confirm", proxyRequest("https://budget-service.api-castilho.com.br", true))
 
+	// Rotas do payment-service
+	r.Any("/criar-pagamento", proxyRequest("https://api-payments.eletrihub.com/criar-pagamento", false))
+	r.Any("/webhook-mercado-pago", proxyRequest("https://api-payments.eletrihub.com/webhook-mercado-pago", false))
+
 	// WebSocket
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws", false))
 
