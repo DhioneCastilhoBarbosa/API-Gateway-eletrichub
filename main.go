@@ -39,6 +39,7 @@ func main() {
 	r.Any("/api/v1/budget/", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/", false))
 	r.Any("/api/v1/budget/all", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/all", false))
 	r.Any("/api/v1/budget/link", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/budget/link", false))
+	r.Any("/api/v1/budget/pagamento/webhook", proxyRequest("https://budget-service.api-castilho.com.br/api/v1/pagamento/webhook", false))
 
 	r.Any("/api/v1/budget/:id/value", proxyRequest("https://budget-service.api-castilho.com.br", true))
 	r.Any("/api/v1/budget/:id/status", proxyRequest("https://budget-service.api-castilho.com.br", true))
