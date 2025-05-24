@@ -51,6 +51,10 @@ func main() {
 	r.Any("/criar-pagamento", proxyRequest("https://api-payments.eletrihub.com/criar-pagamento", false))
 	r.Any("/webhook-mercado-pago", proxyRequest("https://api-payments.eletrihub.com/webhook-mercado-pago", false))
 
+	// Rotas do notification-service
+	r.Any("/notificar-cliente", proxyRequest("https://api-notification.eletrihub.com/notificar-cliente", false))
+	r.Any("/notificar-instalador", proxyRequest("https://api-notification.eletrihub.com/notificar-instalador", false))
+
 	// WebSocket
 	r.Any("/chat/ws", proxyRequest("http://localhost:8081/ws", false))
 
