@@ -61,8 +61,8 @@ func main() {
 	r.Any("/notificar-instalador", proxy.Request("https://api-notification.eletrihub.com/notificar-instalador", false))
 
 	// WebSocket
-	r.Any("/chat/ws", proxy.Request("http://localhost:8081/ws", false))
-	r.Any("/chat/history", proxy.Request("http://localhost:8081/history", false))
+	r.Any("/chat/ws", proxy.Request("ws://api-chat-service.eletrihub.com/ws", false))
+	r.Any("/chat/history", proxy.Request("https://api-chat-service.eletrihub.com/chat-history", false))
 
 	log.Println("✅ API Gateway rodando na porta 8086...")
 	r.Run(":8086")
