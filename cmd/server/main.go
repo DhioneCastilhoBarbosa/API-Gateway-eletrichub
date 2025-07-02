@@ -62,6 +62,7 @@ func main() {
 
 	// WebSocket
 	r.Any("/chat/ws", proxy.Request("http://localhost:8081/ws", false))
+	r.Any("/chat/history", proxy.Request("http://localhost:8081/history", false))
 
 	log.Println("✅ API Gateway rodando na porta 8086...")
 	r.Run(":8086")
