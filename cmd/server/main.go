@@ -6,10 +6,12 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
+	"github.com/koding/websocketproxy"
 )
 
 func main() {
@@ -61,7 +63,7 @@ func main() {
 	r.Any("/notificar-instalador", proxy.Request("https://api-notification.eletrihub.com/notificar-instalador", false))
 
 	// WebSocket
-	r.Any("/chat/ws", proxy.Request("ws://api-chat-service.eletrihub.com/ws", false))
+	r.GET("/chat/ws", WebSocketProxy("ws://api-chat-service.eletrihub.com/ws"))
 	r.Any("/chat/history", proxy.Request("https://api-chat-service.eletrihub.com/chat-history", false))
 
 	log.Println("✅ API Gateway rodando na porta 8086...")
@@ -128,5 +130,18 @@ func Request(targetURL string, preservePath bool) gin.HandlerFunc {
 
 		c.Status(resp.StatusCode)
 		c.Writer.Write(body)
+	}
+}
+
+func WebSocketProxy(target string) gin.HandlerFunc {
+	targetURL, err := url.Parse(target)
+	if err != nil {
+		panic("URL inválida no WebSocket proxy")
+	}
+
+	proxy := websocketproxy.NewProxy(targetURL)
+
+	return func(c *gin.Context) {
+		proxy.ServeHTTP(c.Writer, c.Request)
 	}
 }
